@@ -1,0 +1,27 @@
+- name: Install Git and NodeJS
+  apt:
+    name:
+      - git
+      - nodejs
+    state: present
+    update_cache: yes
+    
+- name: Create group {{ app_group }}
+  group:
+    name: "{{ app_group }}"
+    state: present
+
+- name: Create user {{ app_user }}
+  user:
+    name: "{{ app_user }}"
+    group: "{{ app_group }}"
+    create_home: true
+    shell: /bin/bash
+
+- name: Create apps dir {{ app_path }}
+  file:
+    path: "{{ app_path }}"
+    state: directory
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    mode: 0755
