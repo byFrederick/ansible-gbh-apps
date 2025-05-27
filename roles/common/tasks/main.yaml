@@ -1,11 +1,13 @@
-- name: Install Git and NodeJS
+---
+- name: Install Git, NodeJS and NPM
   apt:
     name:
       - git
       - nodejs
+      - npm
     state: present
     update_cache: yes
-    
+
 - name: Create group {{ app_group }}
   group:
     name: "{{ app_group }}"

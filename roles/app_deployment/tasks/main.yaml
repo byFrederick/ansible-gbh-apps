@@ -1,0 +1,36 @@
+---
+- name: Clone demo-api repo
+  git:
+    repo: "{{ repo_url }}"
+    dest: "{{ app_path }}/{{ app_name }}"
+    version: "{{ repo_version }}"
+    update: yes
+    force: yes
+  become_user: "{{ app_user }}"
+
+- name: Generate .env
+  copy:
+    remote_src: true
+    src: "{{ app_path }}/{{ app_name }}/.env.example"
+    dest: "{{ app_path }}/{{ app_name }}/.env"
+    owner: "{{ app_user }}"
+    group: "{{ app_group }}"
+    force: no
+  become_user: "{{ app_user }}"
+
+- name: Install demo-api dependencies
+  npm:
+    path: "{{ app_path }}/{{ app_name }}"
+  become_user: "{{ app_user }}"
+
+- name: Create systemd unit for {{ app_name }}
+  template:
+    src:  app_service.j2
+    dest: /etc/systemd/system/{{ app_name }}.service
+  notify: Reload systemd
+
+- name: Start {{ app_name }} service
+  systemd:
+    name: "{{ app_name }}"
+    state: started
+    enabled: yes

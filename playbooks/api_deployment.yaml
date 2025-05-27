@@ -1,6 +1,12 @@
 ---
 - hosts: webservers
   become: true
+  vars:
+    app_name: demo-api
+    repo_url: https://github.com/gbh-tech/demo-api.git
+    repo_version: main
   roles:
   - role: common
     tags: common
+  - role: app_deployment
+    tags: deployment
