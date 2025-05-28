@@ -1,0 +1,30 @@
+---
+- name: Build {{ app_name }}
+  command: npm run build
+  args:
+    chdir: "{{ app_path }}/{{ app_name }}"
+  become_user: "{{ app_user }}"
+
+- name: Install Nginx
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- name: Remove default Nginx config
+  file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+
+- name: Deploy Nginx site for {{ app_name }}
+  template:
+    src: nginx.j2
+    dest: /etc/nginx/sites-available/{{ app_name }}
+  notify: Reload Nginx
+
+- name: Enable nginx site for {{ app_name }}
+  file:
+    src: "/etc/nginx/sites-available/{{ app_name }}"
+    dest: "/etc/nginx/sites-enabled/{{ app_name }}"
+    state: link
+  notify: Reload Nginx

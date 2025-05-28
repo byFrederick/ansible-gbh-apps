@@ -1,0 +1,14 @@
+---
+- hosts: webservers
+  become: true
+  vars:
+    app_name: demo-webapp
+    repo_url: https://github.com/gbh-tech/demo-webapp.git
+    repo_version: main
+  roles:
+  - role: common
+    tags: common
+  - role: app_deployment
+    tags: deployment
+  - role: webapp
+    tags: webapp

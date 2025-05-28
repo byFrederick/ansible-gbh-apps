@@ -1,5 +1,5 @@
 ---
-- name: Clone demo-api repo
+- name: Clone {{ app_name }} repo
   git:
     repo: "{{ repo_url }}"
     dest: "{{ app_path }}/{{ app_name }}"
@@ -18,19 +18,7 @@
     force: no
   become_user: "{{ app_user }}"
 
-- name: Install demo-api dependencies
+- name: Install {{ app_name }} dependencies
   npm:
     path: "{{ app_path }}/{{ app_name }}"
   become_user: "{{ app_user }}"
-
-- name: Create systemd unit for {{ app_name }}
-  template:
-    src:  app_service.j2
-    dest: /etc/systemd/system/{{ app_name }}.service
-  notify: Reload systemd
-
-- name: Start {{ app_name }} service
-  systemd:
-    name: "{{ app_name }}"
-    state: started
-    enabled: yes

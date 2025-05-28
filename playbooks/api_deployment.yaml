@@ -10,3 +10,5 @@
     tags: common
   - role: app_deployment
     tags: deployment
+  - role: api
+    tags: api
